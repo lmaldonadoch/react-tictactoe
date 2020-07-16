@@ -11,18 +11,11 @@ function Square(props) {
 }
 
 class Board extends React.Component {
-  constructor(props) {
-    super(props); //All javascript subclasses need a constructor. All React subclasses must call the props super!!!
-    this.state = {
-      squares: Array(9).fill(null),
-      xIsNext: true,
-    };
-  }
   renderSquare(i) {
     return (
       <Square
-        value={this.state.squares[i]} //By calling this.state with an onClick event, we tell React to re render the elemet whenever it is clicked
-        onClick={() => this.handleClick(i)} //In React it is convention to use on[Event] for props that represent an event and handle[Event] for methods which handle the event
+        value={this.props.squares[i]} //By calling this.state with an onClick event, we tell React to re render the elemet whenever it is clicked
+        onClick={() => this.props.onClick(i)} //In React it is convention to use on[Event] for props that represent an event and handle[Event] for methods which handle the event
       />
     );
   }
@@ -36,14 +29,6 @@ class Board extends React.Component {
   }
 
   render() {
-    const winner = calculateWinner(this.state.squares);
-    let status;
-    if (winner) {
-      status = 'Winner:' + winner;
-    } else {
-      status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
-    }
-
     return (
       <div>
         <div className="status">{status}</div>
@@ -68,14 +53,39 @@ class Board extends React.Component {
 }
 
 class Game extends React.Component {
+  constructor(props) {
+    super(props); //All javascript subclasses need a constructor. All React subclasses must call the props super!!!
+    this.state = {
+      history: [
+        {
+          squares: Array(9).fill(null),
+        },
+      ],
+      xIsNext: true,
+    };
+  }
   render() {
+    const history = this.state.history;
+    const current = history[history.length - 1];
+    const winner = calculateWinner(current.squares);
+    let status;
+    if (winner) {
+      status = 'Winner:' + winner;
+    } else {
+      status = 'Next player:' + (this.state.xIsNext ? 'X' : 'O');
+    }
     return (
       <div className="game">
         <div className="game-board">
-          <Board />
+          <Board
+            squares={current.squares}
+            onClick={(i) => {
+              this.handleClick(i);
+            }}
+          />
         </div>
         <div className="game-info">
-          <div>{/* status */}</div>
+          <div>{status}</div>
           <ol>{/* TODO */}</ol>
         </div>
       </div>
