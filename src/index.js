@@ -3,14 +3,29 @@ import ReactDOM from 'react-dom';
 import './index.css';
 
 class Square extends React.Component {
+  constructor(props) {
+    super(props); //All javascript subclasses need a constructor. All React subclasses must call the props super!!!
+    this.state = {
+      value: null,
+    };
+  }
   render() {
-    return <button className="square">{/* TODO */}</button>;
+    return (
+      <button
+        className="square"
+        onClick={() => {
+          this.setState({ value: 'X' }); //By calling this.state with an onClick event, we tell React to re render the elemet whenever it is clicked
+        }}
+      >
+        {this.state.value}
+      </button>
+    );
   }
 }
 
 class Board extends React.Component {
   renderSquare(i) {
-    return <Square />;
+    return <Square value={i} />;
   }
 
   render() {
